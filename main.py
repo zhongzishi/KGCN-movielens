@@ -23,7 +23,7 @@ def download_zip(url):
     download_dir = "./data"
     subprocess.call(["wget", url, "-P", download_dir])
     subprocess.call(["unzip", "-j", f"{download_dir}/{zip_fn}", "-d", download_dir])
-    subprocess.call(["cp", f"{download_dir}/ratings.dat", f"{DATA_PATH}/."])
+    subprocess.call(["cp", f"{download_dir}/ratings.dat", f"{download_dir}/movies.dat", f"{DATA_PATH}/."])
 
 
 def convert_dat(dat_path, cols):
@@ -43,7 +43,7 @@ class KGCNDataset(torch.utils.data.Dataset):
         return user_id, item_id, np.float32(label)
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
     parser.add_argument('--data_url', type=str, default='http://files.grouplens.org/datasets/movielens/ml-10m.zip', help='which dataset to use')
