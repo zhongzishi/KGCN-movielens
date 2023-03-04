@@ -17,13 +17,6 @@ class DataLoader:
                 'rating_path': 'data/movie/ratings.csv',
                 'rating_sep': ',',
                 'threshold': 4.0
-            },
-            'music': {
-                'item2id_path': 'data/music/item_index2entity_id.txt',
-                'kg_path': 'data/music/kg.txt',
-                'rating_path': 'data/music/user_artists.dat',
-                'rating_sep': '\t',
-                'threshold': 0.0
             }
         }
         self.data = data
