@@ -24,11 +24,14 @@ def download_zip(url):
     subprocess.call(["wget", url, "-P", download_dir])
     subprocess.call(["unzip", "-j", f"{download_dir}/{zip_fn}", "-d", download_dir])
     subprocess.call(["cp", f"{download_dir}/ratings.dat", f"{download_dir}/movies.dat", f"{DATA_PATH}/."])
-
+    print("Download and transformation done")
 
 def convert_dat(dat_path, cols):
     df = pd.read_csv(dat_path, sep="::", names=cols)
-    df.to_csv(f"{DATA_PATH}/ratings.csv", index=False)
+    output_fn = dat_path.split("/")[-1].split(".")[0]+".csv"
+    output_path = f"{DATA_PATH}/{output_fn}"
+    df.to_csv(output_path, index=False)
+    print(f"{output_path} saved")
 
 
 class KGCNDataset(torch.utils.data.Dataset):
@@ -134,6 +137,8 @@ if __name__ == "__main__":
 
     # save model
     ts = int(time.time())
-    torch.save(net.state_dict(), f"./kgcn_{ts}.pt")
+    model_path = f"./kgcn_{ts}.pt"
+    torch.save(net.state_dict(), model_path)
+    print(f"model saved : {model_path}")
 
 
