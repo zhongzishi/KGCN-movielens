@@ -1,7 +1,6 @@
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import LabelEncoder
-from sklearn.model_selection import train_test_split
 import random
 
 
@@ -9,21 +8,19 @@ class DataLoader:
     '''
     Data Loader class which makes dataset for training / knowledge graph dictionary
     '''
-    def __init__(self, data):
-        self.cfg = {
-            'movie': {
-                'item2id_path': 'data/movie/item_index2entity_id.txt',
-                'kg_path': 'data/movie/kg.txt',
-                'rating_path': 'data/movie/ratings.csv',
-                'rating_sep': ',',
-                'threshold': 4.0
-            }
-        }
-        self.data = data
+    def __init__(self):
+        self.item2id_path = 'data/movie/item_index2entity_id.txt'
+        self.kg_path = 'data/movie/kg.txt'
+        self.rating_path = 'data/movie/ratings.csv'
+        self.rating_sep = ','
+        self.threshold = 4.0
         
-        df_item2id = pd.read_csv(self.cfg[data]['item2id_path'], sep='\t', header=None, names=['item','id'])
-        df_kg = pd.read_csv(self.cfg[data]['kg_path'], sep='\t', header=None, names=['head','relation','tail'])
-        df_rating = pd.read_csv(self.cfg[data]['rating_path'], sep=self.cfg[data]['rating_sep'], names=['userID', 'itemID', 'rating'], skiprows=1)
+        df_item2id = pd.read_csv(self.item2id_path, sep='\t', header=None, names=['item','id'])
+        df_kg = pd.read_csv(self.kg_path, sep='\t', header=None, names=['head', 'relation', 'tail'])
+        df_rating = pd.read_csv(self.rating_path,
+                                sep=self.rating_sep,
+                                names=['userID', 'itemID', 'rating'],
+                                skiprows=1)
         
         # df_rating['itemID'] and df_item2id['item'] both represents old entity ID
         df_rating = df_rating[df_rating['itemID'].isin(df_item2id['item'])]
@@ -58,7 +55,7 @@ class DataLoader:
         Build dataset for training (rating data)
         It contains negative sampling process
         '''
-        print('Build dataset dataframe ...', end=' ')
+        print('Build dataset ...', end=' ')
         # df_rating update
         df_dataset = pd.DataFrame()
         df_dataset['userID'] = self.user_encoder.transform(self.df_rating['userID'])
@@ -67,10 +64,10 @@ class DataLoader:
         item2id_dict = dict(zip(self.df_item2id['item'], self.df_item2id['id']))
         self.df_rating['itemID'] = self.df_rating['itemID'].apply(lambda x: item2id_dict[x])
         df_dataset['itemID'] = self.entity_encoder.transform(self.df_rating['itemID'])
-        df_dataset['label'] = self.df_rating['rating'].apply(lambda x: 0 if x < self.cfg[self.data]['threshold'] else 1)
+        df_dataset['label'] = self.df_rating['rating'].apply(lambda x: 0 if x < self.threshold else 1)
         
         # negative sampling
-        df_dataset = df_dataset[df_dataset['label']==1]
+        df_dataset = df_dataset[df_dataset['label'] == 1]
         # df_dataset requires columns to have new entity ID
         full_item_set = set(range(len(self.entity_encoder.classes_)))
         user_list = []
@@ -122,7 +119,11 @@ class DataLoader:
         return self._construct_kg()
     
     def get_encoders(self):
-        return (self.user_encoder, self.entity_encoder, self.relation_encoder)
+        return (self.user_encoder,
+                self.entity_encoder,
+                self.relation_encoder)
     
     def get_num(self):
-        return (len(self.user_encoder.classes_), len(self.entity_encoder.classes_), len(self.relation_encoder.classes_))
+        return (len(self.user_encoder.classes_),
+                len(self.entity_encoder.classes_),
+                len(self.relation_encoder.classes_))
