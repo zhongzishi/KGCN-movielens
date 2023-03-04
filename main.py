@@ -127,16 +127,21 @@ if __name__ == "__main__":
             test_loss_list.append(test_loss / len(test_loader))
             auc_score_list.append(total_roc / len(test_loader))
 
+    ts = int(time.time())
+
     # plot
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 4))
-    ax1.plot(loss_list)
-    ax1.plot(test_loss_list)
-    ax2.plot(auc_score_list)
+    ax1.plot(loss_list, label="train loss")
+    ax1.plot(test_loss_list, label="test loss")
+    ax2.plot(auc_score_list, label=" AUC score")
+    ax1.legend(loc="upper right")
+    ax2.legend(loc="upper right")
+    plt.show()
+    fig.savefig(f"./kgcn_{ts}.png")
 
-    plt.tight_layout()
 
     # save model
-    ts = int(time.time())
+
     model_path = f"./kgcn_{ts}.pt"
     torch.save(net.state_dict(), model_path)
     print(f"model saved : {model_path}")
