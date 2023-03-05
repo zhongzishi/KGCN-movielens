@@ -5,7 +5,7 @@ import torch.nn.functional as F
 class Aggregator(torch.nn.Module):
     '''
     Aggregator class
-    Mode in ['sum', 'concat', 'neighbor']
+    ['sum', 'concat', 'neighbor']
     '''
     
     def __init__(self, batch_size, dim, aggregator):
@@ -38,9 +38,7 @@ class Aggregator(torch.nn.Module):
         return act(output.view((self.batch_size, -1, self.dim)))
         
     def _mix_neighbor_vectors(self, neighbor_vectors, neighbor_relations, user_embeddings):
-        '''
-        This aims to aggregate neighbor vectors
-        '''
+
         # [batch_size, 1, dim] -> [batch_size, 1, 1, dim]
         user_embeddings = user_embeddings.view((self.batch_size, 1, 1, self.dim))
         
