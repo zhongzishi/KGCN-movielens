@@ -62,7 +62,7 @@ if __name__ == "__main__":
     parser.add_argument('--lr', type=float, default=5e-4, help='learning rate')
     parser.add_argument('--ratio', type=float, default=0.8, help='size of training dataset')
     parser.add_argument('--seed', type=int, default=999, help='seed to split train test set')
-    args = parser.parse_args(['--l2_weight', '1e-4'])
+    args = parser.parse_args()
 
     # download & transform data
     download_zip(args.data_url)
