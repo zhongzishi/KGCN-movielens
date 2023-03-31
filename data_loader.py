@@ -18,9 +18,9 @@ class DataLoader:
         df_item2id = pd.read_csv(self.item2id_path, sep='\t', header=None, names=['item','id'])
         df_kg = pd.read_csv(self.kg_path, sep='\t', header=None, names=['head', 'relation', 'tail'])
         df_rating = pd.read_csv(self.rating_path,
-                                sep=self.rating_sep,
-                                names=['userID', 'itemID', 'rating'],
-                                skiprows=1)
+                                sep=self.rating_sep)
+        df_rating = df_rating.iloc[:, :3]
+        df_rating.columns = ['userID', 'itemID', 'rating']
         
         # df_rating['itemID'] and df_item2id['item'] both represents old entity ID
         df_rating = df_rating[df_rating['itemID'].isin(df_item2id['item'])]
