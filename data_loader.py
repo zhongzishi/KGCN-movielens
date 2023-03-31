@@ -18,8 +18,8 @@ class DataLoader:
         df_item2id = pd.read_csv(self.item2id_path, sep='\t', header=None, names=['item','id'])
         df_kg = pd.read_csv(self.kg_path, sep='\t', header=None, names=['head', 'relation', 'tail'])
         df_rating = pd.read_csv(self.rating_path,
-                                sep=self.rating_sep)
-        df_rating = df_rating.iloc[:, :3]
+                                sep=self.rating_sep,
+                                usecols=["userId", "movieId", "rating"])
         df_rating.columns = ['userID', 'itemID', 'rating']
         
         # df_rating['itemID'] and df_item2id['item'] both represents old entity ID
