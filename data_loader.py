@@ -69,6 +69,7 @@ class DataLoader:
         
         # negative sampling
         df_dataset = df_dataset[df_dataset['label'] == 1]
+        print("2nd step positive userID count: ", df_dataset['userID'].nunique())
         # df_dataset requires columns to have new entity ID
         full_item_set = set(range(len(self.entity_encoder.classes_)))
         user_list = []
@@ -82,7 +83,7 @@ class DataLoader:
             item_list.extend(negative_sampled)
             label_list.extend([0] * len(negative_sampled))
         negative = pd.DataFrame({'userID': user_list, 'itemID': item_list, 'label': label_list})
-        print("2nd step negative userID count: ", negative['userID'].nunique())
+        print("3rd step negative userID count: ", negative['userID'].nunique())
         df_dataset = pd.concat([df_dataset, negative])
         
         df_dataset = df_dataset.sample(frac=1, replace=False, random_state=999)
