@@ -59,6 +59,7 @@ class DataLoader:
         # df_rating update
         df_dataset = pd.DataFrame()
         df_dataset['userID'] = self.user_encoder.transform(self.df_rating['userID'])
+        print("1st step userID count: ",df_dataset['userID'].nunique())
         
         # update to new id
         item2id_dict = dict(zip(self.df_item2id['item'], self.df_item2id['id']))
@@ -81,10 +82,12 @@ class DataLoader:
             item_list.extend(negative_sampled)
             label_list.extend([0] * len(negative_sampled))
         negative = pd.DataFrame({'userID': user_list, 'itemID': item_list, 'label': label_list})
+        print("2nd step negative userID count: ", negative['userID'].nunique())
         df_dataset = pd.concat([df_dataset, negative])
         
         df_dataset = df_dataset.sample(frac=1, replace=False, random_state=999)
         df_dataset.reset_index(inplace=True, drop=True)
+        print("final step df_dataset userID count: ",df_dataset["userID"].nunique())
         print('Done')
         return df_dataset
         
