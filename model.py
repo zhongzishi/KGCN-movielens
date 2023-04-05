@@ -25,6 +25,8 @@ class KGCN(torch.nn.Module):
         self.usr = torch.nn.Embedding(num_user, args.dim)
         self.ent = torch.nn.Embedding(num_ent, args.dim)
         self.rel = torch.nn.Embedding(num_rel, args.dim)
+
+        self.real_item_emb = None
         
     def _gen_adj(self):
         '''
@@ -62,6 +64,8 @@ class KGCN(torch.nn.Module):
         entities, relations = self._get_neighbors(v)
         
         item_embeddings = self._aggregate(user_embeddings, entities, relations)
+
+        self.real_item_emb = item_embeddings
         
         scores = (user_embeddings * item_embeddings).sum(dim = 1)
             
@@ -76,8 +80,10 @@ class KGCN(torch.nn.Module):
         relations = []
         
         for h in range(self.n_iter):
-            neighbor_entities = torch.LongTensor(self.adj_ent[entities[h].cpu()]).view((self.batch_size, -1)).to(self.device)
-            neighbor_relations = torch.LongTensor(self.adj_rel[entities[h].cpu()]).view((self.batch_size, -1)).to(self.device)
+            neighbor_entities = torch.LongTensor(self.adj_ent[entities[h].cpu()])\
+                .view((self.batch_size, -1)).to(self.device)
+            neighbor_relations = torch.LongTensor(self.adj_rel[entities[h].cpu()])\
+                .view((self.batch_size, -1)).to(self.device)
             entities.append(neighbor_entities)
             relations.append(neighbor_relations)
             

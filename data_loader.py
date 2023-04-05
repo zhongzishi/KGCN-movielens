@@ -95,8 +95,7 @@ class DataLoader:
         
     def _construct_kg(self):
         '''
-        Construct knowledge graph
-        Knowledge graph is dictionary form
+        Construct knowledge graph in dictionary form
         'head': [(relation, tail), ...]
         '''
         print('Construct knowledge graph ...', end=' ')
